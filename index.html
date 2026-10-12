@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cake Freedom 2in1 - Chiến Lược 4 Danh Mục Ăn Chắc</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --cake-pink: #ec4899;
+      --cake-gradient: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+      --primary: #2563eb;
+      --emerald: #059669;
+      --emerald-light: #ecfdf5;
+      --amber: #d97706;
+      --amber-light: #fffbeb;
+      --rose: #e11d48;
+      --rose-light: #fff1f2;
+      --font-main: 'Plus Jakarta Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: var(--font-main);
+      padding: 24px 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container { max-width: 1040px; margin: 0 auto; }
+
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+    .top-bar h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; }
+    .cake-badge { background: var(--cake-gradient); color: white; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 700; }
+    .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    /* Summary Dashboard */
+    .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+    @media (max-width: 800px) { .summary-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .summary-grid { grid-template-columns: 1fr; } }
+    
+    .stat-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+    .stat-card .label { font-size: 12.5px; color: var(--text-muted); font-weight: 600; }
+    .stat-card .value { font-family: var(--font-mono); font-size: 20px; font-weight: 800; margin-top: 6px; }
+
+    .tip-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: #1e3a8a;
+      line-height: 1.5;
+    }
+
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+    .panel h2 { font-size: 17px; font-weight: 700; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+
+    .form-grid-3 { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 14px; }
+    @media (max-width: 768px) { .form-grid-3 { grid-template-columns: 1fr; } }
+
+    label { font-size: 12.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; display: block; }
+    input, select {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      font-family: var(--font-main);
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      outline: none;
+    }
+    input:focus, select:focus { border-color: var(--cake-pink); box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.15); }
+    input[type="number"] { font-family: var(--font-mono); font-weight: 600; }
+
+    .purpose-selector { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+    .purpose-option {
+      flex: 1;
+      min-width: 150px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+    .purpose-option input { width: auto; cursor: pointer; accent-color: var(--cake-pink); }
+
+    .custom-fee-wrap {
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: #fffbeb;
+      border: 1px dashed #fcd34d;
+      border-radius: 8px;
+      display: none;
+      align-items: center;
+      gap: 12px;
+    }
+    .custom-fee-wrap input { width: 90px; }
+
+    .live-calc-box {
+      margin-top: 14px;
+      padding: 14px 18px;
+      background: var(--emerald-light);
+      border: 1px solid #a7f3d0;
+      border-radius: 10px;
+      font-size: 13.5px;
+      display: none;
+      line-height: 1.6;
+    }
+    .mono-hl { font-family: var(--font-mono); font-weight: 700; color: var(--emerald); }
+    .mono-rose { font-family: var(--font-mono); font-weight: 700; color: var(--rose); }
+
+    .btn { padding: 9px 14px; border-radius: 8px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+    .btn-cake { background: var(--cake-gradient); color: white; }
+    .btn-cake:hover { opacity: 0.95; }
+    .btn-secondary { background: #f1f5f9; color: var(--text-main); border: 1px solid var(--border); }
+    .btn-action-small { background: transparent; border: 1px solid var(--border); font-size: 11.5px; padding: 4px 8px; border-radius: 6px; cursor: pointer; }
+
+    .cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; margin-bottom: 24px; }
+    .cat-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+    .cat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .cat-name { font-size: 14px; font-weight: 700; }
+    .cat-mcc { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); }
+    .cat-badge { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 999px; }
+    
+    .meter-label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
+    .bar-bg { background: #f1f5f9; height: 7px; border-radius: 999px; overflow: hidden; margin-bottom: 8px; }
+    .bar-fill { height: 100%; transition: width 0.3s; }
+    
+    .history-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    .history-table th { text-align: left; padding: 9px 10px; color: var(--text-muted); font-weight: 600; border-bottom: 1px solid var(--border); background: #f8fafc; }
+    .history-table td { padding: 10px; border-bottom: 1px solid var(--border); }
+    .mono { font-family: var(--font-mono); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    
+    <div class="top-bar">
+      <div>
+        <h1>Cake Freedom 2in1 <span class="cake-badge">Target 600k – 800k</span></h1>
+        <p>Chiến lược tập trung 4 danh mục chuẩn MCC + Theo dõi tiền bù chỉ tiêu 5tr</p>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="exportData()">💾 Sao lưu (Export)</button>
+        <button class="btn btn-secondary" onclick="triggerImport()">📂 Khôi phục (Import)</button>
+        <input type="file" id="importInput" accept=".json" style="display: none;" onchange="handleImport(event)">
+        <button class="btn btn-secondary" onclick="resetCycle()">↺ Reset chu kỳ mới</button>
+      </div>
+    </div>
+
+    <!-- 4 Khối Dashboard -->
+    <div class="summary-grid">
+      <div class="stat-card">
+        <div class="label">Tổng quẹt kỳ này (Min 5tr)</div>
+        <div class="value" style="color: var(--primary);" id="statSpend">0 ₫</div>
+        <div style="font-size:11px; margin-top:2px;" id="statSpendSub">Đang tính toán...</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Hoàn tiền thu về (Mục tiêu 800k)</div>
+        <div class="value" style="color: var(--emerald);" id="statCashback">0 ₫</div>
+        <div style="font-size:11px; color:var(--emerald); margin-top:2px;" id="statCashbackSub">Còn nhận thêm: 800.000 ₫</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Tổng phí phát sinh</div>
+        <div class="value" style="color: var(--rose);" id="statFees">0 ₫</div>
+        <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Momo QR hoặc bán lại</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Lợi nhuận ròng thực tế</div>
+        <div class="value" id="statNet">0 ₫</div>
+        <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Tiền hoàn - Chi phí</div>
+      </div>
+    </div>
+
+    <!-- Hộp nhắc bài thực chiến -->
+    <div class="tip-box">
+      <strong>🎯 Chiến thuật phân bổ mục tiêu 800k:</strong><br>
+      • <b>TMĐT (Shopee/Lazada - 5262):</b> Chia đơn 200k–250k (bào đủ 1tr tiền mua = 200k hoàn).<br>
+      • <b>Du lịch (Agoda/Traveloka - 4722):</b> Mua dịch vụ/Gift Card 250k (bào đủ 1tr = 200k hoàn).<br>
+      • <b>Siêu thị (5411):</b> Đi cách nhau 24h, mỗi ngày quẹt 1 bill 200k–250k (đủ 4-5 ngày là full 200k).<br>
+      • <b>Di chuyển (Grab/Be - 4121):</b> Mua gói GrabGift hoặc ép bill &lt; 50k (lấy 10k) hoặc 200k–250k (lấy 50k).<br>
+      • <b>Bù mồi thiếu hạn mức:</b> Quẹt nốt phần còn lại để tổng thẻ $\ge$ 5.000.000 ₫ rồi cất thẻ!
+    </div>
+
+    <!-- Form Nhập Chi Tiêu -->
+    <div class="panel">
+      <h2>+ Nhập Giao Dịch Mới</h2>
+      <div class="form-grid-3">
+        <div>
+          <label>Danh mục thanh toán:</label>
+          <select id="txCatSelect" onchange="calcPreview()"></select>
+        </div>
+        <div>
+          <label>Số tiền quẹt bill (VNĐ):</label>
+          <input type="number" id="txAmount" placeholder="VD: 250000" step="10000" oninput="calcPreview()">
+        </div>
+        <div>
+          <label>Ngày quẹt thẻ:</label>
+          <input type="date" id="txDate" onchange="calcPreview()">
+        </div>
+      </div>
+
+      <div class="purpose-selector">
+        <label class="purpose-option">
+          <input type="radio" name="txMode" value="personal" checked onchange="handleModeChange()">
+          <span>🛍️ Mua trực tiếp</span>
+        </label>
+        <label class="purpose-option">
+          <input type="radio" name="txMode" value="momo" onchange="handleModeChange()">
+          <span>📱 Momo QR (+2k & 2.2%)</span>
+        </label>
+        <label class="purpose-option">
+          <input type="radio" name="txMode" value="resell" onchange="handleModeChange()">
+          <span>🔄 Bán lại chiết khấu</span>
+        </label>
+      </div>
+
+      <div id="resellWrap" class="custom-fee-wrap">
+        <label for="resellPct">Nhập % phí bán lại:</label>
+        <input type="number" id="resellPct" value="2.2" step="0.1" oninput="calcPreview()">
+        <span style="font-size:12px; color:#78350f;">% chiết khấu chịu lỗ</span>
+      </div>
+
+      <div id="livePreview" class="live-calc-box"></div>
+
+      <button class="btn btn-cake" style="width: 100%; margin-top: 14px;" onclick="addExpense()">Ghi Nhận Giao Dịch</button>
+    </div>
+
+    <!-- Danh sách 4 danh mục chính + 1 mục bù -->
+    <h3 style="font-size: 16px; margin-bottom: 12px;">Tiến Độ 4 Danh Mục + Mục Bù Hạn Mức</h3>
+    <div class="cat-grid" id="catGrid"></div>
+
+    <!-- Lịch sử giao dịch -->
+    <div class="panel">
+      <h2>Lịch Sử Giao Dịch Chu Kỳ Này</h2>
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Ngày</th>
+            <th>Danh mục</th>
+            <th>Hình thức</th>
+            <th>Tiền quẹt bill</th>
+            <th>Hoàn tiền</th>
+            <th>Phí</th>
+            <th>Lời ròng</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    // 4 Danh mục chuẩn + 1 mục bù chỉ tiêu
+    const defaultCategories = [
+      { id: "cat_tmdt", name: "1. TMĐT (Shopee, Tiki, Lazada)", mcc: "5262", note: "Gộp/tách đơn 200k-250k", cap: 200000, currentCashback: 0, currentSpend: 0, isReward: true },
+      { id: "cat_dulich", name: "2. Du Lịch (Agoda, Traveloka)", mcc: "4722", note: "Khách sạn, vé máy bay, Gift Card", cap: 200000, currentCashback: 0, currentSpend: 0, isReward: true },
+      { id: "cat_sieuthi", name: "3. Siêu Thị (1 lần/ngày)", mcc: "5411", note: "Chỉ hoàn bill đầu tiên trong ngày", cap: 200000, currentCashback: 0, currentSpend: 0, isReward: true },
+      { id: "cat_dichuyen", name: "4. Di Chuyển (Grab, Be, XanhSM)", mcc: "4121", note: "GrabGift hoặc bill < 50k / 200k-250k", cap: 200000, currentCashback: 0, currentSpend: 0, isReward: true },
+      { id: "cat_bu_chi_tieu", name: "5. Chi Tiêu Bù Chỉ Tiêu (0% Hoàn)", mcc: "Khác", note: "Quẹt đủ mốc kích hoạt 5.000.000 ₫", cap: 0, currentCashback: 0, currentSpend: 0, isReward: false }
+    ];
+
+    let categories = JSON.parse(localStorage.getItem('cake_4cat_list')) || defaultCategories;
+    let historyList = JSON.parse(localStorage.getItem('cake_4cat_history')) || [];
+
+    document.getElementById('txDate').valueAsDate = new Date();
+
+    function saveState() {
+      localStorage.setItem('cake_4cat_list', JSON.stringify(categories));
+      localStorage.setItem('cake_4cat_history', JSON.stringify(historyList));
+      render();
+    }
+
+    function handleModeChange() {
+      const mode = document.querySelector('input[name="txMode"]:checked').value;
+      document.getElementById('resellWrap').style.display = (mode === 'resell') ? 'flex' : 'none';
+      calcPreview();
+    }
+
+    function isSupermarketUsedToday(dateStr) {
+      return historyList.some(h => h.catId === 'cat_sieuthi' && h.date === dateStr && h.cashback > 0);
+    }
+
+    function calcBillCashback(amount, catId, dateStr) {
+      if (catId === 'cat_bu_chi_tieu' || amount <= 0) {
+        return { cashback: 0, note: "Giao dịch bù mốc chỉ tiêu (0% hoàn)" };
+      }
+
+      if (catId === 'cat_sieuthi' && isSupermarketUsedToday(dateStr)) {
+        return { cashback: 0, note: "⚠️ MCC 5411: Đã có bill siêu thị trong ngày (chỉ hoàn bill đầu tiên/ngày)" };
+      }
+
+      const raw = amount * 0.20;
+      if (amount < 200000) {
+        const actual = Math.min(raw, 10000);
+        return { cashback: actual, note: raw > 10000 ? "Chặn trần 10k (bill < 200k)" : "20% nguyên vẹn" };
+      } else {
+        const actual = Math.min(raw, 50000);
+        return { cashback: actual, note: raw > 50000 ? "Chặn trần 50k (bill ≥ 200k)" : "20% nguyên vẹn" };
+      }
+    }
+
+    function calcPreview() {
+      const catId = document.getElementById('txCatSelect').value;
+      const amount = parseFloat(document.getElementById('txAmount').value);
+      const dateStr = document.getElementById('txDate').value;
+      const mode = document.querySelector('input[name="txMode"]:checked').value;
+      const resellPct = parseFloat(document.getElementById('resellPct').value) || 0;
+      const liveBox = document.getElementById('livePreview');
+
+      if (!amount || amount <= 0) {
+        liveBox.style.display = 'none';
+        return;
+      }
+
+      const cat = categories.find(c => c.id === catId);
+      const totalCashbackNow = categories.reduce((s, c) => s + c.currentCashback, 0);
+
+      const res = calcBillCashback(amount, catId, dateStr);
+      
+      let actualCashback = 0;
+      if (cat.isReward) {
+        const remainingCat = Math.max(0, cat.cap - cat.currentCashback);
+        const remainingTotal = Math.max(0, 800000 - totalCashbackNow);
+        actualCashback = Math.min(res.cashback, remainingCat, remainingTotal);
+      }
+
+      let fee = 0;
+      if (mode === 'momo') fee = 2000 + (amount * 0.022);
+      else if (mode === 'resell') fee = amount * (resellPct / 100);
+      const net = actualCashback - fee;
+
+      let warning = "";
+      if (cat.isReward && cat.currentCashback >= cat.cap) {
+        warning = `<div style="color:var(--rose); font-weight:700; margin-top:4px;">🛑 Nhóm này ĐÃ KỊCH TRẦN 200.000 ₫! Bill này nhận 0₫ hoàn.</div>`;
+      } else if (totalCashbackNow >= 800000) {
+        warning = `<div style="color:var(--rose); font-weight:700; margin-top:4px;">🛑 Đã gom trọn mục tiêu 800.000 ₫ của 4 nhóm!</div>`;
+      }
+
+      liveBox.style.display = 'block';
+      liveBox.innerHTML = `
+        <div>• <b>Cộng tổng chi tiêu thẻ:</b> <span class="mono" style="color:var(--primary); font-weight:700;">+${amount.toLocaleString()} ₫</span> (luôn tính đủ 100%)</div>
+        <div>• <b>Hoàn tiền ghi nhận:</b> <span class="mono-hl">+${Math.round(actualCashback).toLocaleString()} ₫</span> (${res.note})</div>
+        ${fee > 0 ? `<div>• <b>Phí phát sinh:</b> <span class="mono-rose">-${Math.round(fee).toLocaleString()} ₫</span></div>` : ''}
+        <div style="margin-top:4px; padding-top:4px; border-top:1px dashed #cbd5e1;">
+          ➔ <b>Lợi nhuận ròng:</b> 
+          <span style="font-family:var(--font-mono); font-weight:800; color:${net >= 0 ? 'var(--emerald)' : 'var(--rose)'};">
+            ${net >= 0 ? '+' : ''}${Math.round(net).toLocaleString()} ₫
+          </span>
+        </div>
+        ${warning}
+      `;
+    }
+
+    function addExpense() {
+      const catId = document.getElementById('txCatSelect').value;
+      const amount = parseFloat(document.getElementById('txAmount').value);
+      const dateStr = document.getElementById('txDate').value;
+      const mode = document.querySelector('input[name="txMode"]:checked').value;
+      const resellPct = parseFloat(document.getElementById('resellPct').value) || 0;
+
+      if (!amount || amount <= 0 || !dateStr) {
+        alert("Vui lòng nhập số tiền và ngày hợp lệ!");
+        return;
+      }
+
+      const cat = categories.find(c => c.id === catId);
+      const totalCashbackNow = categories.reduce((s, c) => s + c.currentCashback, 0);
+
+      const res = calcBillCashback(amount, catId, dateStr);
+      let actualCashback = 0;
+      if (cat.isReward) {
+        const remainingCat = Math.max(0, cat.cap - cat.currentCashback);
+        const remainingTotal = Math.max(0, 800000 - totalCashbackNow);
+        actualCashback = Math.min(res.cashback, remainingCat, remainingTotal);
+      }
+
+      let fee = 0;
+      if (mode === 'momo') fee = Math.round(2000 + (amount * 0.022));
+      else if (mode === 'resell') fee = Math.round(amount * (resellPct / 100));
+
+      const net = Math.round(actualCashback - fee);
+
+      cat.currentSpend += amount;
+      cat.currentCashback += actualCashback;
+
+      let modeTag = "Trực tiếp";
+      if (mode === 'momo') modeTag = "Momo QR (2k+2.2%)";
+      if (mode === 'resell') modeTag = `Bán lại (-${resellPct}%)`;
+
+      historyList.unshift({
+        id: "tx_" + Date.now(),
+        date: dateStr,
+        catId: cat.id,
+        catName: cat.name,
+        modeTag: modeTag,
+        amount: amount,
+        cashback: Math.round(actualCashback),
+        fee: fee,
+        net: net
+      });
+
+      document.getElementById('txAmount').value = '';
+      document.getElementById('livePreview').style.display = 'none';
+      saveState();
+    }
+
+    function deleteTx(txId) {
+      const idx = historyList.findIndex(h => h.id === txId);
+      if (idx === -1) return;
+      const tx = historyList[idx];
+      if (confirm(`Xác nhận xóa giao dịch ${tx.amount.toLocaleString()} ₫ của mục ${tx.catName}?`)) {
+        const cat = categories.find(c => c.id === tx.catId);
+        if (cat) {
+          cat.currentSpend = Math.max(0, cat.currentSpend - tx.amount);
+          cat.currentCashback = Math.max(0, cat.currentCashback - tx.cashback);
+        }
+        historyList.splice(idx, 1);
+        saveState();
+      }
+    }
+
+    function exportData() {
+      const data = { categories, historyList, exportDate: new Date().toISOString() };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `cake_4cats_backup_${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+    }
+
+    function triggerImport() { document.getElementById('importInput').click(); }
+
+    function handleImport(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const d = JSON.parse(evt.target.result);
+          if (d.categories && Array.isArray(d.categories)) {
+            categories = d.categories;
+            historyList = d.historyList || [];
+            saveState();
+            alert("Khôi phục thành công!");
+          }
+        } catch (err) { alert("Lỗi đọc file: " + err.message); }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetCycle() {
+      if (confirm("Reset toàn bộ số liệu về 0 cho kỳ sao kê mới?")) {
+        categories.forEach(c => { c.currentSpend = 0; c.currentCashback = 0; });
+        historyList = [];
+        saveState();
+      }
+    }
+
+    function render() {
+      // 1. Dropdown
+      const sel = document.getElementById('txCatSelect');
+      sel.innerHTML = categories.map(c => `
+        <option value="${c.id}">${c.name} ${c.isReward && c.currentCashback >= c.cap ? '(ĐÃ FULL 200k)' : ''}</option>
+      `).join('');
+
+      // 2. KPIs
+      const totalSpend = categories.reduce((s, c) => s + c.currentSpend, 0);
+      const totalCashback = categories.reduce((s, c) => s + c.currentCashback, 0);
+      const totalFees = historyList.reduce((s, h) => s + (h.fee || 0), 0);
+      const netProfit = totalCashback - totalFees;
+
+      document.getElementById('statSpend').innerText = totalSpend.toLocaleString() + ' ₫';
+      const needSpend = Math.max(0, 5000000 - totalSpend);
+      const subEl = document.getElementById('statSpendSub');
+      if (needSpend > 0) {
+        subEl.innerText = `Thiếu ${needSpend.toLocaleString()} ₫ để đạt mốc 5tr`;
+        subEl.style.color = 'var(--amber)';
+      } else {
+        subEl.innerText = `✅ Đã đủ mốc 5tr kích hoạt hoàn tiền!`;
+        subEl.style.color = 'var(--emerald)';
+      }
+
+      document.getElementById('statCashback').innerText = Math.round(totalCashback).toLocaleString() + ' ₫';
+      document.getElementById('statCashbackSub').innerText = `Còn nhận thêm: ${(800000 - totalCashback).toLocaleString()} ₫ (Target 800k)`;
+
+      document.getElementById('statFees').innerText = totalFees.toLocaleString() + ' ₫';
+      
+      const elNet = document.getElementById('statNet');
+      elNet.innerText = (netProfit >= 0 ? '+' : '') + Math.round(netProfit).toLocaleString() + ' ₫';
+      elNet.style.color = netProfit >= 0 ? 'var(--emerald)' : 'var(--rose)';
+
+      // 3. Render danh mục
+      const catContainer = document.getElementById('catGrid');
+      catContainer.innerHTML = categories.map(c => {
+        if (!c.isReward) {
+          return `
+            <div class="cat-card" style="background:#f8fafc; border-style:dashed;">
+              <div class="cat-header">
+                <div>
+                  <div class="cat-name">${c.name}</div>
+                  <div class="cat-mcc">Giao dịch bù mồi</div>
+                </div>
+                <span class="cat-badge" style="background:#e2e8f0; color:#475569;">0% Hoàn</span>
+              </div>
+              <div style="font-size:13px; margin: 12px 0 6px;">
+                Đã quẹt bù: <b class="mono" style="color:var(--primary); font-size:15px;">${c.currentSpend.toLocaleString()} ₫</b>
+              </div>
+              <div style="font-size:11.5px; color:var(--text-muted);">${c.note}</div>
+            </div>
+          `;
+        }
+
+        const cashPct = Math.min(100, Math.round((c.currentCashback / c.cap) * 100));
+        const isFull = c.currentCashback >= c.cap;
+        return `
+          <div class="cat-card">
+            <div class="cat-header">
+              <div>
+                <div class="cat-name">${c.name}</div>
+                <div class="cat-mcc">MCC: ${c.mcc}</div>
+              </div>
+              <span class="cat-badge" style="background:${isFull ? 'var(--rose-light)' : 'var(--emerald-light)'}; color:${isFull ? 'var(--rose)' : 'var(--emerald)'};">
+                ${isFull ? 'Đã Full 200k' : 'Đang bào'}
+              </span>
+            </div>
+
+            <div class="meter-label">
+              <span>Đã hoàn (${cashPct}%)</span>
+              <span class="mono" style="font-weight:700; color:var(--emerald);">${Math.round(c.currentCashback).toLocaleString()} ₫ / ${c.cap.toLocaleString()} ₫</span>
+            </div>
+            <div class="bar-bg">
+              <div class="bar-fill" style="width:${cashPct}%; background:${isFull ? 'var(--rose)' : 'var(--emerald)'};"></div>
+            </div>
+
+            <div style="font-size:11.5px; color:var(--text-muted); display:flex; justify-content:space-between; margin-top:6px;">
+              <span>Đã tiêu: <b>${c.currentSpend.toLocaleString()} ₫</b></span>
+              <span>${c.note}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // 4. Lịch sử
+      const tbody = document.getElementById('historyBody');
+      if (historyList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:16px;">Chưa có giao dịch nào được ghi nhận.</td></tr>`;
+      } else {
+        tbody.innerHTML = historyList.map(h => `
+          <tr>
+            <td class="mono">${h.date}</td>
+            <td><strong>${h.catName}</strong></td>
+            <td><span style="font-size:11.5px; color:var(--text-muted);">${h.modeTag}</span></td>
+            <td class="mono">${h.amount.toLocaleString()} ₫</td>
+            <td class="mono" style="color:var(--emerald); font-weight:700;">+${h.cashback.toLocaleString()} ₫</td>
+            <td class="mono" style="color:var(--rose);">${h.fee > 0 ? '-' + h.fee.toLocaleString() + ' ₫' : '0 ₫'}</td>
+            <td class="mono" style="font-weight:800; color:${h.net >= 0 ? 'var(--emerald)' : 'var(--rose)'};">${h.net >= 0 ? '+' : ''}${h.net.toLocaleString()} ₫</td>
+            <td><button class="btn-action-small" style="color:var(--rose);" onclick="deleteTx('${h.id}')">Xóa</button></td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    render();
+  </script>
+</body>
+</html>
